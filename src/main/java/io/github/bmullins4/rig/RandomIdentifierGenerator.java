@@ -1,39 +1,71 @@
 
 package io.github.bmullins4.rig;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class RandomIdentifierGenerator {
 	
 	private final Language lang;
+	private String oldIdentifier;
 	private final int maxLength;
 	
-	private List<String> changedIdentifiers;
+				 //old, new
+	private Map<String, String> changedIdentifiers;
 	
-	public RandomIdentifierGenerator(final Language lang, final int maxLength) {
+	public RandomIdentifierGenerator(final Language lang, final String oldIdentifier, final int maxLength) {
 		
 		this.lang = Objects.requireNonNull(lang);
+		this.oldIdentifier = Objects.requireNonNull(oldIdentifier);
 		if(maxLength < 2)
 			throw new IllegalArgumentException("Length must be > 1");
 		this.maxLength = maxLength;
 		
-		changedIdentifiers = new ArrayList<String>();
+		changedIdentifiers = new HashMap<String, String>();
 	}
 	
 	public String generate() {
 	
-		String identifier = "";
-		int length = (int) (Math.random() * maxLength + 2);
-		//TODO: implement working part
+		StringBuffer identifier = new StringBuffer("");
+		int length = (int) (Math.random() * maxLength + 1);
 		
+		out : while(true) {
+			//create identifier
+			for(int i = 0; i < length; i++) {
+				char c = lang.template().charAt((int)(Math.random() * lang.template().length()));
+				identifier.append(c);
+			}
+			//check regex rules
+			if(Pattern.matches(lang.rule(), identifier)) {
+				//check keywords
+				for(int i = 0; i < lang.keywords().length; i++) {
+					if(identifier.toString().equals(lang.keywords()[i]))
+						break;
+					if(!identifier.toString().equals(lang.keywords()[i]) && i == lang.keywords().length - 1) {
+						changedIdentifiers.put(oldIdentifier, identifier.toString());
+						break out;
+					}
+				}
+			} else break;
+		}
 		
-		return identifier;
+		return identifier.toString();
+	}
+	
+	public void setIdent(final String ident) {
+		
+		oldIdentifier = ident;
 	}
 	
 	public String getLanguage() {
 		
 		return lang.lang();
+	}
+	
+	public Map<String, String> getChanges() {
+		
+		return changedIdentifiers;
 	}
 }

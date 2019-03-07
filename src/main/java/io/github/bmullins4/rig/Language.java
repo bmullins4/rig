@@ -24,7 +24,7 @@ public enum Language {
 		}
 		
 		@Override
-		public String rules() { return "\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"; }
+		public String rule() { return "\\b[a-zA-Z_$][a-zA-Z0-9_$]*\\b"; }
 		@Override
 		public String template() {
 			return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_$";
@@ -34,7 +34,7 @@ public enum Language {
 	};
 	
 	public abstract String[] keywords();
-	public abstract String rules();
+	public abstract String rule();
 	public abstract String template();
 	public abstract String lang();
 }
