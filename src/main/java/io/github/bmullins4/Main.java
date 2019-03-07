@@ -8,15 +8,26 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		RandomIdentifierGenerator rig = new RandomIdentifierGenerator(Language.JAVA, "num1", 15);
-		System.out.println(rig.generate());
-		rig.setIdent("something");
-		System.out.println(rig.generate());
-		rig.setIdent("str");
-		System.out.println(rig.generate());
-		rig.setIdent("analProbeTest34");
-		System.out.println(rig.generate());
+		RandomIdentifierGenerator[] rigs = {
+			new RandomIdentifierGenerator(Language.C, "num1", 15),
+			new RandomIdentifierGenerator(Language.CPP, "num1", 15),
+			new RandomIdentifierGenerator(Language.CSHARP, "num1", 15),
+			new RandomIdentifierGenerator(Language.JAVA, "num1", 15),
+			new RandomIdentifierGenerator(Language.PYTHON2, "num1", 15),
+			new RandomIdentifierGenerator(Language.PYTHON3, "num1", 15),
+		};
 		
-		System.out.println(rig.getChanges());
+		for(RandomIdentifierGenerator rig : rigs) {
+			System.out.println("Language: " + rig.getLanguage());
+			System.out.println(rig.generate());
+			rig.setIdent("something");
+			System.out.println(rig.generate());
+			rig.setIdent("str");
+			System.out.println(rig.generate());
+			rig.setIdent("analProbeTest34");
+			System.out.println(rig.generate());
+			System.out.println(rig.getChanges());
+			System.out.println();
+		}
 	}
 }

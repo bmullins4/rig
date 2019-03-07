@@ -12,8 +12,25 @@ public class RandomIdentifierGenerator {
 	private String oldIdentifier;
 	private final int maxLength;
 	
-				 //old, new
 	private Map<String, String> changedIdentifiers;
+	
+	public RandomIdentifierGenerator(final Language lang) {
+		
+		this.lang = Objects.requireNonNull(lang);
+		maxLength = (int) (Math.random() * 49 + 1);
+		
+		changedIdentifiers = new HashMap<String, String>();
+	}
+	
+	public RandomIdentifierGenerator(final Language lang, final int maxLength) {
+		
+		this.lang = Objects.requireNonNull(lang);
+		if(maxLength < 2)
+			throw new IllegalArgumentException("Length must be > 1");
+		this.maxLength = maxLength;
+		
+		changedIdentifiers = new HashMap<String, String>();
+	}
 	
 	public RandomIdentifierGenerator(final Language lang, final String oldIdentifier, final int maxLength) {
 		
@@ -28,10 +45,12 @@ public class RandomIdentifierGenerator {
 	
 	public String generate() {
 	
-		StringBuffer identifier = new StringBuffer("");
-		int length = (int) (Math.random() * maxLength + 1);
+		StringBuilder identifier = new StringBuilder("");
+		int length = (int) (Math.random() * (maxLength - 1) + 1);
+		boolean regexPass = false, kwPass = false;
 		
-		out : while(true) {
+		while(regexPass == false || kwPass == false) {
+			identifier.delete(0, identifier.length()); //clear string to start over if needed
 			//create identifier
 			for(int i = 0; i < length; i++) {
 				char c = lang.template().charAt((int)(Math.random() * lang.template().length()));
@@ -39,16 +58,17 @@ public class RandomIdentifierGenerator {
 			}
 			//check regex rules
 			if(Pattern.matches(lang.rule(), identifier)) {
+				regexPass = true;
 				//check keywords
 				for(int i = 0; i < lang.keywords().length; i++) {
 					if(identifier.toString().equals(lang.keywords()[i]))
 						break;
 					if(!identifier.toString().equals(lang.keywords()[i]) && i == lang.keywords().length - 1) {
 						changedIdentifiers.put(oldIdentifier, identifier.toString());
-						break out;
+						kwPass = true;
 					}
 				}
-			} else break;
+			}
 		}
 		
 		return identifier.toString();
