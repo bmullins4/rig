@@ -9,16 +9,15 @@ import java.util.regex.Pattern;
 public class RandomIdentifierGenerator {
 	
 	private final Language lang;
+	private final int maxLength, defMax = 49;
 	private String oldIdentifier;
-	private final int maxLength;
-	
 	private Map<String, String> changedIdentifiers;
 	
 	public RandomIdentifierGenerator(final Language lang) {
 		
 		this.lang = Objects.requireNonNull(lang);
-		maxLength = (int) (Math.random() * 49 + 1);
 		
+		maxLength = (int) (Math.random() * defMax + 1);
 		changedIdentifiers = new HashMap<String, String>();
 	}
 	
@@ -29,6 +28,15 @@ public class RandomIdentifierGenerator {
 			throw new IllegalArgumentException("Length must be > 1");
 		this.maxLength = maxLength;
 		
+		changedIdentifiers = new HashMap<String, String>();
+	}
+	
+	public RandomIdentifierGenerator(final Language lang, final String oldIdentifier) {
+		
+		this.lang = Objects.requireNonNull(lang);
+		this.oldIdentifier = Objects.requireNonNull(oldIdentifier);
+		
+		maxLength = (int) (Math.random() * defMax + 1);
 		changedIdentifiers = new HashMap<String, String>();
 	}
 	
@@ -46,46 +54,42 @@ public class RandomIdentifierGenerator {
 	public String generate() {
 	
 		StringBuilder identifier = new StringBuilder("");
-		int length = (int) (Math.random() * (maxLength - 1) + 1);
-		boolean regexPass = false, kwPass = false;
 		
-		while(regexPass == false || kwPass == false) {
-			identifier.delete(0, identifier.length()); //clear string to start over if needed
-			//create identifier
-			for(int i = 0; i < length; i++) {
-				char c = lang.template().charAt((int)(Math.random() * lang.template().length()));
-				identifier.append(c);
-			}
-			//check regex rules
-			if(Pattern.matches(lang.rule(), identifier)) {
-				regexPass = true;
-				//check keywords
-				for(int i = 0; i < lang.keywords().length; i++) {
-					if(identifier.toString().equals(lang.keywords()[i]))
-						break;
-					if(!identifier.toString().equals(lang.keywords()[i]) && i == lang.keywords().length - 1) {
-						changedIdentifiers.put(oldIdentifier, identifier.toString());
-						kwPass = true;
-					}
-				}
-			}
+		while(!conditionsMet(identifier)) {
+			identifier.delete(0, identifier.length()); //clear string to start over if conditions aren't met
+			createIdent(identifier);
+			conditionsMet(identifier);
 		}
 		
 		return identifier.toString();
 	}
 	
-	public void setIdent(final String ident) {
+	private void createIdent(StringBuilder identifier) {
+
+		int length = (int) (Math.random() * (maxLength - 1) + 1);
 		
-		oldIdentifier = ident;
+		for(int i = 0; i < length; i++) {
+			char c = lang.template().charAt((int)(Math.random() * lang.template().length()));
+			identifier.append(c);
+		}
 	}
 	
-	public String getLanguage() {
+	private boolean conditionsMet(StringBuilder identifier) {
 		
-		return lang.lang();
+		if(Pattern.matches(lang.rule(), identifier))
+			for(int i = 0; i < lang.keywords().length; i++) {
+				if(identifier.toString().equals(lang.keywords()[i]))
+					return false;
+				if(!identifier.toString().equals(lang.keywords()[i]) && i == lang.keywords().length - 1) {
+					changedIdentifiers.put(oldIdentifier, identifier.toString());
+					return true;
+				}
+			}
+		
+		return false;
 	}
 	
-	public Map<String, String> getChanges() {
-		
-		return changedIdentifiers;
-	}
+	public void setIdent(final String ident) { oldIdentifier = ident; }
+	public String getLanguage() { return lang.lang(); }
+	public Map<String, String> getChanges() { return changedIdentifiers; }
 }

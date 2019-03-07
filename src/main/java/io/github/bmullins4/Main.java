@@ -9,12 +9,12 @@ public class Main {
 	public static void main(String[] args) {
 		
 		RandomIdentifierGenerator[] rigs = {
-			new RandomIdentifierGenerator(Language.C, "num1", 15),
-			new RandomIdentifierGenerator(Language.CPP, "num1", 15),
-			new RandomIdentifierGenerator(Language.CSHARP, "num1", 15),
-			new RandomIdentifierGenerator(Language.JAVA, "num1", 15),
-			new RandomIdentifierGenerator(Language.PYTHON2, "num1", 15),
-			new RandomIdentifierGenerator(Language.PYTHON3, "num1", 15),
+			new RandomIdentifierGenerator(Language.C, "num1"),
+			new RandomIdentifierGenerator(Language.CPP, "num1"),
+			new RandomIdentifierGenerator(Language.CSHARP, "num1"),
+			new RandomIdentifierGenerator(Language.JAVA, "num1"),
+			new RandomIdentifierGenerator(Language.PYTHON2, "num1"),
+			new RandomIdentifierGenerator(Language.PYTHON3, "num1"),
 		};
 		
 		for(RandomIdentifierGenerator rig : rigs) {
