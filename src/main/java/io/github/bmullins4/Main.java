@@ -1,6 +1,7 @@
 
 package io.github.bmullins4;
 
+import io.github.bmullins4.gui.GUI;
 import io.github.bmullins4.rig.Language;
 import io.github.bmullins4.rig.RandomIdentifierGenerator;
 
@@ -8,7 +9,9 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		RandomIdentifierGenerator[] rigs = {
+		GUI.assemble("Random Identifier Generator", 500, 550);
+		
+		/*RandomIdentifierGenerator[] rigs = {
 			new RandomIdentifierGenerator(Language.C, "num1"),
 			new RandomIdentifierGenerator(Language.CPP, "num1"),
 			new RandomIdentifierGenerator(Language.CSHARP, "num1"),
@@ -28,6 +31,6 @@ public class Main {
 			System.out.println(rig.generate());
 			System.out.println(rig.getChanges());
 			System.out.println();
-		}
+		}*/
 	}
 }
